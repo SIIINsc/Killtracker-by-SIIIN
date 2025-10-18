@@ -64,6 +64,18 @@ class GUI():
         self.kill_history_entries = []
         self.star_citizen_log_widget = None
         self.star_citizen_log_entries = []
+        self.colors = {
+            'bg_dark': '#1e1e1e',
+            'bg_mid': '#252526',
+            'bg_light': '#333333',
+            'text': '#cccccc',
+            'text_dark': '#888888',
+            'accent': '#007acc',
+            'button': '#007acc',
+            'submit_button': '#4CAF50',
+            'error': '#f44747',
+            'gold': '#d4af37',
+        }
         self.pvp_summary = {
             "PU": {"kills": Counter(), "deaths": Counter()},
             "AC": {"kills": Counter(), "deaths": Counter()},
@@ -89,9 +101,6 @@ class GUI():
         self.system_test_window = None
         self.system_test_button = None
         self.commander_mode_button = None
-        self.colors = {'bg_dark':'#1e1e1e','bg_mid':'#252526','bg_light':'#333333','text':'#cccccc',
-                       'text_dark':'#888888','accent':'#007acc','button':'#007acc',
-                       'submit_button':'#4CAF50','error':'#f44747','gold':'#d4af37'}
         self.blightveil_theme = {
             'title': '#A855F7',
             'accent': '#8B5CF6',
