@@ -75,10 +75,6 @@ class GUI():
             'submit_button': '#4CAF50',
             'error': '#f44747',
             'gold': '#d4af37',
-            'label_grey': '#b4b4b4',
-            'summary_box_bg': '#3a3a3a',
-            'summary_box_border': '#565656',
-            'summary_button': '#5a5a5a',
         }
         self.pvp_summary = {
             "PU": {"kills": Counter(), "deaths": Counter()},
@@ -542,9 +538,9 @@ class GUI():
     def set_session_kills(self, count: int):
         count = max(0, int(count))
         self.session_stats["kills"] = count
-        if self.session_kills_value_label and self.session_kills_value_label.winfo_exists():
-            self.session_kills_value_label.config(
-                text=str(count),
+        if self.session_kills_label and self.session_kills_label.winfo_exists():
+            self.session_kills_label.config(
+                text=f"Total Session Kills: {count}",
                 fg=self.session_stat_colors["kills"],
             )
         self._refresh_kd_ratio_display()
@@ -555,9 +551,9 @@ class GUI():
     def set_session_deaths(self, count: int):
         count = max(0, int(count))
         self.session_stats["deaths"] = count
-        if self.session_deaths_value_label and self.session_deaths_value_label.winfo_exists():
-            self.session_deaths_value_label.config(
-                text=str(count),
+        if self.session_deaths_label and self.session_deaths_label.winfo_exists():
+            self.session_deaths_label.config(
+                text=f"Total Session Deaths: {count}",
                 fg=self.session_stat_colors["deaths"],
             )
         self._refresh_kd_ratio_display()
@@ -568,9 +564,9 @@ class GUI():
     def set_current_killstreak(self, count: int):
         count = max(0, int(count))
         self.session_stats["curr_streak"] = count
-        if self.curr_killstreak_value_label and self.curr_killstreak_value_label.winfo_exists():
-            self.curr_killstreak_value_label.config(
-                text=str(count),
+        if self.curr_killstreak_label and self.curr_killstreak_label.winfo_exists():
+            self.curr_killstreak_label.config(
+                text=f"Current Kill Streak: {count}",
                 fg=self.session_stat_colors["current_streak"],
             )
 
@@ -580,9 +576,9 @@ class GUI():
     def set_max_killstreak(self, count: int):
         count = max(0, int(count))
         self.session_stats["max_streak"] = count
-        if self.max_killstreak_value_label and self.max_killstreak_value_label.winfo_exists():
-            self.max_killstreak_value_label.config(
-                text=str(count),
+        if self.max_killstreak_label and self.max_killstreak_label.winfo_exists():
+            self.max_killstreak_label.config(
+                text=f"Max Kill Streak: {count}",
                 fg=self.session_stat_colors["max_streak"],
             )
 
@@ -617,69 +613,33 @@ class GUI():
                 explicit_display = "∞"
             else:
                 explicit_display = f"{kills / deaths:.2f}"
-        if self.kd_ratio_value_label and self.kd_ratio_value_label.winfo_exists():
-            self.kd_ratio_value_label.config(
-                text=str(explicit_display),
+        if self.kd_ratio_label and self.kd_ratio_label.winfo_exists():
+            self.kd_ratio_label.config(
+                text=f"K/D Ratio: {explicit_display}",
                 fg=self.session_stat_colors["kd"],
             )
 
-    def _create_session_stat_display(self, parent, label_text: str, initial_value: str, value_color: str,
-                                     font_spec, row: int, column: int) -> tk.Label:
-        container = tk.Frame(parent, bg=self.colors['bg_dark'])
-        container.grid(row=row, column=column, sticky="w", padx=(0, 6))
-        prefix = tk.Label(
-            container,
-            text=f"{label_text} ",
-            font=font_spec,
-            bg=self.colors['bg_dark'],
-            fg=self.colors['label_grey'],
-        )
-        prefix.pack(side=tk.LEFT)
-        value_label = tk.Label(
-            container,
-            text=initial_value,
-            font=font_spec,
-            bg=self.colors['bg_dark'],
-            fg=value_color,
-        )
-        value_label.pack(side=tk.LEFT)
-        return value_label
-
-    def _create_summary_text_widget(self, parent) -> Tuple[tk.Frame, tk.Text]:
-        container = tk.Frame(parent, bg=self.colors['bg_dark'])
-        box_frame = tk.Frame(
-            container,
-            bg=self.colors['summary_box_border'],
-            bd=1,
-            relief=tk.SOLID,
-        )
-        box_frame.pack(fill=tk.BOTH, expand=True)
-
-        text_widget = tk.Text(
-            box_frame,
-            height=4,
+    def _create_summary_text_widget(self, parent) -> tk.Text:
+        widget = tk.Text(
+            parent,
+            height=3,
             wrap=tk.WORD,
-            bg=self.colors['summary_box_bg'],
+            bg=self.colors['bg_dark'],
             fg=self.colors['text'],
             font=("Segoe UI", 9, "bold"),
             relief=tk.FLAT,
             borderwidth=0,
             highlightthickness=0,
-            padx=6,
-            pady=6,
+            padx=0,
+            pady=0,
             takefocus=0,
         )
-        scrollbar = tk.Scrollbar(box_frame, orient=tk.VERTICAL, command=text_widget.yview)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        text_widget.configure(yscrollcommand=scrollbar.set)
-        text_widget.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-
-        text_widget.tag_configure("placeholder", foreground=self.colors['text_dark'])
-        text_widget.tag_configure("kill_name", foreground=self.summary_colors["kill_name"])
-        text_widget.tag_configure("death_name", foreground=self.summary_colors["death_name"])
-        text_widget.tag_configure("counter", foreground=self.summary_colors["counter"])
-        text_widget.config(state=tk.DISABLED)
-        return container, text_widget
+        widget.tag_configure("placeholder", foreground=self.colors['text_dark'])
+        widget.tag_configure("kill_name", foreground=self.summary_colors["kill_name"])
+        widget.tag_configure("death_name", foreground=self.summary_colors["death_name"])
+        widget.tag_configure("counter", foreground=self.summary_colors["counter"])
+        widget.config(state=tk.DISABLED)
+        return widget
 
     def clear_pvp_mode(self, mode_key: str):
         mode_data = self.pvp_summary.get(mode_key)
@@ -700,7 +660,7 @@ class GUI():
             entries = sorted(counter.items(), key=lambda item: (-item[1], item[0].lower()))
             for index, (name, count) in enumerate(entries):
                 if index > 0:
-                    widget.insert(tk.END, ", ")
+                    widget.insert(tk.END, "  ")
                 name_tag = "kill_name" if event_type == "kill" else "death_name"
                 widget.insert(tk.END, name, (name_tag,))
                 if count > 1:
@@ -1151,51 +1111,46 @@ class GUI():
         for column in range(5):
             session_stats_frame.grid_columnconfigure(column, weight=1)
         stat_font = ("Segoe UI", 9, "bold")
-        self.session_kills_value_label = self._create_session_stat_display(
+        self.session_kills_label = tk.Label(
             session_stats_frame,
-            label_text="Total Session Kills:",
-            initial_value="0",
-            value_color=self.session_stat_colors["kills"],
-            font_spec=stat_font,
-            row=0,
-            column=0,
+            text="Total Session Kills: 0",
+            font=stat_font,
+            bg=self.colors['bg_dark'],
+            fg=self.session_stat_colors["kills"],
         )
-        self.session_deaths_value_label = self._create_session_stat_display(
+        self.session_kills_label.grid(row=0, column=0, sticky="w")
+        self.session_deaths_label = tk.Label(
             session_stats_frame,
-            label_text="Total Session Deaths:",
-            initial_value="0",
-            value_color=self.session_stat_colors["deaths"],
-            font_spec=stat_font,
-            row=0,
-            column=1,
+            text="Total Session Deaths: 0",
+            font=stat_font,
+            bg=self.colors['bg_dark'],
+            fg=self.session_stat_colors["deaths"],
         )
-        self.kd_ratio_value_label = self._create_session_stat_display(
+        self.session_deaths_label.grid(row=0, column=1, sticky="w")
+        self.kd_ratio_label = tk.Label(
             session_stats_frame,
-            label_text="K/D Ratio:",
-            initial_value="--",
-            value_color=self.session_stat_colors["kd"],
-            font_spec=stat_font,
-            row=0,
-            column=2,
+            text="K/D Ratio: --",
+            font=stat_font,
+            bg=self.colors['bg_dark'],
+            fg=self.session_stat_colors["kd"],
         )
-        self.curr_killstreak_value_label = self._create_session_stat_display(
+        self.kd_ratio_label.grid(row=0, column=2, sticky="w")
+        self.curr_killstreak_label = tk.Label(
             session_stats_frame,
-            label_text="Current Kill Streak:",
-            initial_value="0",
-            value_color=self.session_stat_colors["current_streak"],
-            font_spec=stat_font,
-            row=0,
-            column=3,
+            text="Current Kill Streak: 0",
+            font=stat_font,
+            bg=self.colors['bg_dark'],
+            fg=self.session_stat_colors["current_streak"],
         )
-        self.max_killstreak_value_label = self._create_session_stat_display(
+        self.curr_killstreak_label.grid(row=0, column=3, sticky="w")
+        self.max_killstreak_label = tk.Label(
             session_stats_frame,
-            label_text="Max Kill Streak:",
-            initial_value="0",
-            value_color=self.session_stat_colors["max_streak"],
-            font_spec=stat_font,
-            row=0,
-            column=4,
+            text="Max Kill Streak: 0",
+            font=stat_font,
+            bg=self.colors['bg_dark'],
+            fg=self.session_stat_colors["max_streak"],
         )
+        self.max_killstreak_label.grid(row=0, column=4, sticky="w")
         self.vehicle_status_label = tk.Label(
             session_stats_frame,
             text="Current Vehicle: Inactive",
@@ -1228,6 +1183,18 @@ class GUI():
             )
             header.pack(side=tk.LEFT, expand=True, fill=tk.X)
 
+            tk.Button(
+                header_row,
+                text="Clear",
+                command=lambda m=mode_key: self.clear_pvp_mode(m),
+                bg=self.colors['button'],
+                fg="#FFFFFF",
+                relief=tk.FLAT,
+                font=("Segoe UI", 8, "bold"),
+                padx=8,
+                pady=2,
+            ).pack(side=tk.RIGHT)
+
             kills_row = tk.Frame(mode_frame, bg=self.colors['bg_dark'])
             kills_row.pack(fill=tk.X, pady=(2, 0))
             tk.Label(
@@ -1235,11 +1202,11 @@ class GUI():
                 text="You killed:",
                 font=("Segoe UI", 9, "bold"),
                 bg=self.colors['bg_dark'],
-                fg=self.colors['label_grey'],
+                fg=self.summary_colors["kill_name"],
                 anchor="w"
             ).pack(side=tk.LEFT)
-            kills_container, kills_value = self._create_summary_text_widget(kills_row)
-            kills_container.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(6, 0))
+            kills_value = self._create_summary_text_widget(kills_row)
+            kills_value.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(6, 0))
 
             deaths_row = tk.Frame(mode_frame, bg=self.colors['bg_dark'])
             deaths_row.pack(fill=tk.X)
@@ -1248,24 +1215,11 @@ class GUI():
                 text="Killed you:",
                 font=("Segoe UI", 9, "bold"),
                 bg=self.colors['bg_dark'],
-                fg=self.colors['label_grey'],
+                fg=self.summary_colors["death_name"],
                 anchor="w"
             ).pack(side=tk.LEFT)
-            deaths_container, deaths_value = self._create_summary_text_widget(deaths_row)
-            deaths_container.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(6, 6))
-            tk.Button(
-                deaths_row,
-                text="Clear",
-                command=lambda m=mode_key: self.clear_pvp_mode(m),
-                bg=self.colors['summary_button'],
-                fg="#FFFFFF",
-                activebackground=self.colors['summary_box_border'],
-                activeforeground="#FFFFFF",
-                relief=tk.FLAT,
-                font=("Segoe UI", 8, "bold"),
-                padx=8,
-                pady=2,
-            ).pack(side=tk.LEFT)
+            deaths_value = self._create_summary_text_widget(deaths_row)
+            deaths_value.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(6, 0))
 
             self.pvp_summary_labels[mode_key] = {"kills": kills_value, "deaths": deaths_value}
 
