@@ -8,7 +8,7 @@ from pathlib import Path
 from threading import Thread
 from time import sleep
 from tkinter import messagebox, scrolledtext, font, ttk
-from typing import Optional
+from typing import Optional, Tuple
 import webbrowser
 
 import global_settings
@@ -46,8 +46,8 @@ class GUI():
         self.init_run = True; self.cfg_handler = cfg_handler
         self.log=None; self.sounds=None; self.api=None; self.cm=None; self.app=None
         self.key_entry=None; self.api_status_label=None; self.volume_slider=None
-        self.session_kills_label=None; self.session_deaths_label=None; self.kd_ratio_label=None
-        self.curr_killstreak_label=None; self.max_killstreak_label=None
+        self.session_kills_value_label=None; self.session_deaths_value_label=None; self.kd_ratio_value_label=None
+        self.curr_killstreak_value_label=None; self.max_killstreak_value_label=None
         self.killer_handle_entry=None
         self.killer_ship_combo=None
         self.killer_weapon_combo=None
